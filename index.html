@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <style>
+
+        body {
+            text-align: center;
+        }
+
+        .form {
+            display: inline-block;
+        }
+
+        .input {
+            display: flex;
+        }
+
+        input {
+            margin: 5px;
+        }
+
+        .list {
+            min-height: 300px;
+        }
+
+        .input, .list {
+            margin-top: 10px;
+        }
+
+        .input, .list, .row {
+            border: solid 5px gray;
+        }
+
+        .list {
+            /*position: relative;*/
+            padding-inline-start: 0px;
+        }
+
+        .row {
+            margin: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .task {
+            width: 80%;
+            text-align: left;
+        }
+
+        .del_task {
+            width: 20%;
+            text-align: right;
+        }
+
+        .strike {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form">
+    <div class="input">
+        <input type="text" size="40">
+        <input type="button" data-type="addTask" value="Add task">
+    </div>
+    <ul class="list">
+        <li class="row">
+            <div class="task">
+                <label>
+                    <input type="checkbox">
+                    <span>1. My task</span>
+                </label>
+            </div>
+            <div class="del_task">
+                <input type="button" data-type="delTask" value="Delete">
+            </div>
+        </li>
+    </ul>
+</div>
+
+<script>
+    let id = 0;
+    $(document).ready( function () {
+        $("input[data-type=addTask]").click(function () {
+            const input = $("input[type=text]:first-child");
+            addTask(id++, input.val());
+            input.val('');
+        });
+
+        const ul = $("ul");
+
+        ul.on("click", "[type=checkbox]", function () {
+            strikeTask(this);
+        })
+
+        ul.on("click", "[type=button]", function () {
+            delTask(this);
+        })
+    });
+
+    const delTask = function (element) {
+        $(element).parent().parent().remove();
+    }
+
+    const strikeTask = function (element) {
+        $(element).next().toggleClass("strike");
+    }
+
+    const addTask = function (id, text) {
+        const task = '<li id="' + 'id' + '" class="row">' +
+            '<div class="task">' +
+                '<label> <input type="checkbox"> <span>' + text + '</span> </label>' +
+            '</div>' +
+            '<div class="del_task"> <input type="button" data-type="delTask" value="Delete"> </div>' +
+        '</li>';
+        $('ul.list').append(task);
+    }
+
+</script>
+</body>
+</html>
