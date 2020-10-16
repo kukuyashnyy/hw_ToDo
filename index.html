@@ -36,7 +36,7 @@
 
         .list {
             /*position: relative;*/
-            padding-inline-start: 0px;
+            padding-inline-start: 0;
         }
 
         .row {
@@ -68,37 +68,42 @@
         <input type="button" data-type="addTask" value="Add task">
     </div>
     <ul class="list">
-        <li class="row">
-            <div class="task">
-                <label>
-                    <input type="checkbox">
-                    <span>1. My task</span>
-                </label>
-            </div>
-            <div class="del_task">
-                <input type="button" data-type="delTask" value="Delete">
-            </div>
-        </li>
+<!--        <li class="row">-->
+<!--            <div class="task">-->
+<!--                <label>-->
+<!--                    <input type="checkbox">-->
+<!--                    <span>1. My task</span>-->
+<!--                </label>-->
+<!--            </div>-->
+<!--            <div class="del_task">-->
+<!--                <input type="button" data-type="delTask" value="Delete">-->
+<!--            </div>-->
+<!--        </li>-->
     </ul>
 </div>
 
 <script>
     let id = 0;
     $(document).ready( function () {
+        readList();
+
         $("input[data-type=addTask]").click(function () {
             const input = $("input[type=text]:first-child");
             addTask(id++, input.val());
             input.val('');
+            writeList();
         });
 
         const ul = $("ul");
 
         ul.on("click", "[type=checkbox]", function () {
             strikeTask(this);
+            writeList();
         })
 
         ul.on("click", "[type=button]", function () {
             delTask(this);
+            writeList();
         })
     });
 
@@ -107,6 +112,11 @@
     }
 
     const strikeTask = function (element) {
+        if ($(element).is(':checked')) {
+            $(element).prop('checked', true);
+        } else {
+            $(element).prop('checked', false);
+        }
         $(element).next().toggleClass("strike");
     }
 
@@ -120,6 +130,25 @@
         $('ul.list').append(task);
     }
 
+    const readList = function () {
+        if (localStorage['list'] === undefined) {
+            localStorage['list'] = String();
+        } else {
+            $('ul.list').append(localStorage['list']);
+            console.log(localStorage['list']);
+        }
+        $("[type=checkbox]").each(function () {
+            if ($(this).next().attr('class') === "strike") {
+                $(this).prop('checked', true);
+                console.log("yes");
+            }
+        });
+    }
+
+    const writeList = function () {
+        localStorage['list'] = $('ul.list').html();
+        console.log(localStorage['list']);
+    }
 </script>
 </body>
 </html>
